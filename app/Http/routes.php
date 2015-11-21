@@ -25,8 +25,10 @@ Route::get('auth/register', 'Auth\AuthController@getRegister');
 
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
-Route::get('/user', ['middleware' => 'acl:manage_user', 'as' => 'user.all', 'uses' => 'UserController@index']);
+Route::group(['middleware' => 'auth'], function () {
+	Route::get('/user', ['as' => 'user.all', 'uses' => 'UserController@index']);
 
-Route::get('/user/{user}/edit', ['middleware' => ['auth', 'acl:manage_user'], 'uses' => 'UserController@edit', 'as' => 'admin.user.edit']);
+	Route::get('/user/{user}/edit', ['middleware' => ['auth', 'acl:manage_user'], 'uses' => 'UserController@edit', 'as' => 'admin.user.edit']);
 
-Route::get('user/suspend/{id}', ['middleware' => ['acl:suspend_user'], ' uses' => 'UserController@closeUserAccount', 'as' => 'admin.user.suspend']);
+	Route::get('user/suspend/{id}', ['middleware' => ['acl:suspend_user'], ' uses' => 'UserController@closeUserAccount', 'as' => 'admin.user.suspend']);
+});

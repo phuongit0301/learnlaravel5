@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Gate;
 
 class UserController extends Controller
 {
@@ -15,8 +16,14 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        echo 123;exit;
+    {  
+        if (Gate::denies('view-users')) {
+            abort(403, 'Nope');
+        }
+
+        $users = User::all();
+
+        return view('user.index', compact('users'));
     }
 
     /**
